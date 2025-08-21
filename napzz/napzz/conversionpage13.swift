@@ -10,7 +10,6 @@ import SwiftUI
 struct conversionpage13: View {
     let onNext: () -> Void
     @State private var progress: Double = 0
-    @State private var animateUsers = false
     @State private var animateContent = false
     @Environment(\.presentationMode) var presentationMode
     
@@ -19,56 +18,67 @@ struct conversionpage13: View {
     
     var body: some View {
         ZStack {
-            // Dark background with subtle gradient
+            // Premium gradient background matching other conversion pages
             LinearGradient(
-                gradient: Gradient(colors: [Color.black, Color.blue.opacity(0.1)]),
-                startPoint: .top,
-                endPoint: .bottom
+                gradient: Gradient(colors: [
+                    Color(red: 0.05, green: 0.1, blue: 0.25),
+                    Color(red: 0.1, green: 0.05, blue: 0.2),
+                    Color.black
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    Spacer()
+                // Header with back button
+                HStack {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.leading, 20)
                     
-                    // Robot icon
+                    Spacer()
+                }
+                .padding(.top, 10)
+                
+                VStack(spacing: 0) {
+                    // Premium sleep-themed icon matching other conversion pages
                     ZStack {
                         Circle()
-                            .fill(Color.white)
-                            .frame(width: 80, height: 80)
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.white.opacity(0.15),
+                                        Color.white.opacity(0.05)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 100, height: 100)
                         
-                        VStack(spacing: 4) {
-                            // Robot eyes with blinking animation
-                            HStack(spacing: 10) {
-                                Circle()
-                                    .fill(Color.blue)
-                                    .frame(width: 8, height: 8)
-                                    .scaleEffect(animateUsers ? 1.0 : 0.8)
-                                Circle()
-                                    .fill(Color.blue)
-                                    .frame(width: 8, height: 8)
-                                    .scaleEffect(animateUsers ? 1.0 : 0.8)
-                            }
-                            .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: animateUsers)
-                            
-                            // Robot mouth
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.gray)
-                                .frame(width: 20, height: 4)
-                        }
+                        Image(systemName: "moon.stars.fill")
+                            .font(.system(size: 40, weight: .light))
+                            .foregroundColor(.white)
+                            .symbolRenderingMode(.hierarchical)
                     }
-                    .padding(.bottom, 30)
+                    .padding(.top, 50)
                     
-                    // Title
+                    // Enhanced title matching other conversion pages
                     Text("Creating your sleep report...")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 30)
+                        .lineSpacing(4)
                         .padding(.bottom, 60)
-                        .opacity(animateUsers ? 1.0 : 0.0)
-                        .animation(.easeInOut(duration: 0.8).delay(0.3), value: animateUsers)
+                        .opacity(animateContent ? 1.0 : 0.0)
+                        .animation(.easeInOut(duration: 0.8).delay(0.3), value: animateContent)
                     
                     // Progress Circle
                     ZStack {
@@ -99,30 +109,30 @@ struct conversionpage13: View {
                             .animation(.easeInOut(duration: 0.2), value: progress)
                     }
                     .padding(.bottom, 80)
-                    .scaleEffect(animateUsers ? 1.0 : 0.8)
-                    .opacity(animateUsers ? 1.0 : 0.0)
-                    .animation(.spring(response: 0.8, dampingFraction: 0.8).delay(0.5), value: animateUsers)
+                    .scaleEffect(animateContent ? 1.0 : 0.8)
+                    .opacity(animateContent ? 1.0 : 0.0)
+                    .animation(.spring(response: 0.8, dampingFraction: 0.8).delay(0.5), value: animateContent)
                     
                     // User count section
                     VStack(spacing: 15) {
                         Text("10+ Million Users")
                             .font(.system(size: 32, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
-                            .opacity(animateUsers ? 1.0 : 0.0)
-                            .animation(.easeInOut(duration: 0.8).delay(1.0), value: animateUsers)
+                            .opacity(animateContent ? 1.0 : 0.0)
+                            .animation(.easeInOut(duration: 0.8).delay(1.0), value: animateContent)
                         
                         Text("have chosen shuteye")
                             .font(.title2)
                             .foregroundColor(.gray)
-                            .opacity(animateUsers ? 1.0 : 0.0)
-                            .animation(.easeInOut(duration: 0.8).delay(1.2), value: animateUsers)
+                            .opacity(animateContent ? 1.0 : 0.0)
+                            .animation(.easeInOut(duration: 0.8).delay(1.2), value: animateContent)
                     }
                     .padding(.bottom, 40)
                     
                     // User avatars
                     UserAvatarsView()
-                        .opacity(animateUsers ? 1.0 : 0.0)
-                        .animation(.easeInOut(duration: 1.0).delay(1.5), value: animateUsers)
+                        .opacity(animateContent ? 1.0 : 0.0)
+                        .animation(.easeInOut(duration: 1.0).delay(1.5), value: animateContent)
                     
                     Spacer()
                 }
@@ -151,11 +161,6 @@ struct conversionpage13: View {
     }
     
     private func startAnimations() {
-        // Start the initial animations
-        withAnimation {
-            animateUsers = true
-        }
-        
         // Start progress animation after a short delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
             startProgressAnimation()
